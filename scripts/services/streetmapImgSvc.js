@@ -3,6 +3,7 @@ var fs = require('fs');
 var request = require('request');
 var Promise = require('es6-promise').Promise;
 var imageStitcher = require('../services/imageStitcher');
+var q = require('q');
 
 var streetmapImgSvc = function() {
   var config = {
@@ -21,33 +22,43 @@ var streetmapImgSvc = function() {
     });
   };
 
-  var getStreetImage = function(lat, lang, heading) {
+  var getStreetImage = function(lat, lang, heading, imgName) {
+    var imgPromise = q.defer();
     var reqConfig = {
       method: 'GET',
-      uri: "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" + lat + "," + lang + "&fov=120&heading=" + heading + "&pitch=10&key=" + config.streetMapKey
+      uri: "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" + lat + "," + lang + "&fov=120&heading=" + heading + "&pitch=0&key=" + config.streetMapKey
     };
-    return fetchData(reqConfig);
+    download(reqConfig.uri, imgName + '.jpg', function() {
+      console.log('yo')
+      imgPromise.resolve('solved');
+    });
+    return imgPromise.promise;
+  };
+
+  var download = function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
   };
 
   var getCompleteImage = function(lat, lang) {
-    Promise.all([getStreetImage(lat, lang, 0),
-      getStreetImage(lat, lang, 120),
-      getStreetImage(lat, lang, 240)
-    ]).then(function(imgs) {
-      //console.log(imgs);
-      var f1 = fs.createWriteStream('img1.jpg');
-      var f2 = fs.createWriteStream('img2.jpg');
-      var f3 = fs.createWriteStream('img3.jpg');
-      f1.write(imgs[0].body);
-      f1.end();
-      f1.write(imgs[1].body);
-      f1.end();
-      f1.write(imgs[2].body);
-      f1.end();
-      return _.map(imgs, 'body');
-    }).then(function(d) {
-      //console.log(d)
+    var stitchedImagePromise = q.defer();
+    Promise.all([getStreetImage(lat, lang, 0, 'pano1'),
+      getStreetImage(lat, lang, 120, 'pano2'),
+      getStreetImage(lat, lang, 240, 'pano3')
+    ]).then(function(resolvedPromises) {
+      imageStitcher.stitchImages().then(function(data){
+        console.log(data);
+        if(data === 'done'){
+          console.log('i')
+          stitchedImagePromise.resolve('Done');
+        }
+        else{
+          stitchedImagePromise.resolve('f****');
+        }
+      });
     });
+    return stitchedImagePromise.promise;
   }
 
   return {
