@@ -29,7 +29,7 @@ var streetmapImgSvc = function() {
       uri: "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" + lat + "," + lang + "&fov=120&heading=" + heading + "&pitch=0&key=" + config.streetMapKey
     };
     download(reqConfig.uri, imgName + '.jpg', function() {
-      console.log('yo')
+      console.log('yo');
       imgPromise.resolve('solved');
     });
     return imgPromise.promise;
@@ -37,6 +37,7 @@ var streetmapImgSvc = function() {
 
   var download = function(uri, filename, callback) {
     request.head(uri, function(err, res, body) {
+      console.log('writing');
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
   };
@@ -49,9 +50,9 @@ var streetmapImgSvc = function() {
     ]).then(function(resolvedPromises) {
       imageStitcher.stitchImages().then(function(data){
         console.log(data);
-        if(data === 'done'){
-          console.log('i')
-          stitchedImagePromise.resolve('Done');
+        if(data !== 'f****'){
+          console.log('i');
+          stitchedImagePromise.resolve(data);
         }
         else{
           stitchedImagePromise.resolve('f****');
