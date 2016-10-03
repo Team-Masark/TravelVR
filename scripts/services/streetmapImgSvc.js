@@ -2,7 +2,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var request = require('request');
 var Promise = require('es6-promise').Promise;
-var imageStitcher = require('../services/imagestitcher');
+var imageStitcher = require('../services/imagestitcher2');
 var q = require('q');
 
 var streetmapImgSvc = function() {
