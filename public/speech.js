@@ -47,7 +47,7 @@ var searchModule = function() {
                 "rotation= '0 " + (rotate) + " 0'" +
                 "scale='0.4, 0.4, 0.4'>" +
                 "</a-entity>" +
-                "<a-curvedimage latLng=" + data[i].latLng + " class='image-grid' src='http:" + data[i].imageUrl + "'" +
+                "<a-curvedimage latLng=" + data[i].latLng + " class='image-grid' src='/webproxy?url=" + encodeURIComponent('http:' + data[i].imageUrl) + "'" +
                 "height='3.0'" +
                 "radius='8'" +
                 "theta-length='-30'" +
@@ -57,6 +57,7 @@ var searchModule = function() {
                 "</a-curvedimage>" +
                 "</a-entity>"
             );
+            console.log('imageUrl', data[i].imageUrl);
 
         };
         screenvisibility(false, true, false);

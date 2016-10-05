@@ -14,13 +14,14 @@
     "express": "~4.13.1",
     "fs": "0.0.2",
     "gm": "^1.22.0",
+    "http-proxy": "^1.15.1",
     "image-size": "^0.5.0",
     "jade": "~1.11.0",
     "lodash": "^4.13.1",
     "morgan": "~1.6.1",
     "q": "^1.4.1",
     "randomstring": "^1.1.5",
-    "request": "^2.72.0",
+    "request": "^2.75.0",
     "serve-favicon": "~2.3.0"
   }
 }

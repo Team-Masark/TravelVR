@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var imageStitcher = require('../scripts/services/imageStitcher');
+var imageStitcher = require('../scripts/services/imagestitcher2');
 var streetmapImgSvc = require('../scripts/services/streetmapImgSvc');
 var fs = require('fs');
 
