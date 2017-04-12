@@ -1,4 +1,4 @@
-var serverURL = 'http://ec2-52-66-13-156.ap-south-1.compute.amazonaws.com:8080';
+var serverURL =''// 'http://ec2-52-66-13-156.ap-south-1.compute.amazonaws.com:8080';
 
 var searchModuleInstance = searchModule();
 

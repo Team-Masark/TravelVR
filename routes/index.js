@@ -7,8 +7,9 @@ var request = require('request');
 
 var imgInContext = '';
 /* GET home page. */
-router.post('/stitchtest', function(req, res, next) {
-  fs.unlink('public/' + imgInContext + '.jpg', function(unlinkRes, err) {
+router.post('/stitchtest', function(req, res) {
+  fs.unlink('public/' + imgInContext + '.jpg', function(err,e2) {
+    console.log(err, e2)
     streetmapImgSvc.getCompleteImage(req.body.lat, req.body.long).then(function(data) {
       console.log('reading');
       imgInContext = data;
@@ -18,7 +19,7 @@ router.post('/stitchtest', function(req, res, next) {
   })
 });
 
-router.get('/places', function(req, res, next){
+router.get('/places', function(req, res){
   console.log(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBKMNsXHIvpHQsH3ED2xYa-GQPL2gSNSFA&keyword=${req.query.keyword}&radius=500&location=${req.query.location}`)
   request(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBKMNsXHIvpHQsH3ED2xYa-GQPL2gSNSFA&keyword=${req.query.keyword}&radius=500&location=${req.query.location}`, (err, response, body)=>{
     if(err){

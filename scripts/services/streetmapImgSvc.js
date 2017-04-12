@@ -7,7 +7,7 @@ var q = require('q');
 
 var streetmapImgSvc = function() {
   var config = {
-    'streetMapKey': 'AIzaSyDF_xPIhuK16vhxNSkHvG-u2XbVeeef0GI'
+    'streetMapKey': 'AIzaSyDzIyzf8_GypZoXewaUiTdPO6wlrWVGxFE'
   };
 
   var fetchData = function(config) {
@@ -28,7 +28,10 @@ var streetmapImgSvc = function() {
       method: 'GET',
       uri: "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" + lat + "," + lang + "&fov=120&heading=" + heading + "&pitch=0&key=" + config.streetMapKey
     };
-    download(reqConfig.uri, imgName + '.jpg', function() {
+    download(reqConfig.uri, imgName + '.jpg', function(err) {
+      if(err){
+        console.log(err);
+      }
       console.log('yo');
       imgPromise.resolve('solved');
     });
@@ -58,7 +61,8 @@ var streetmapImgSvc = function() {
           stitchedImagePromise.resolve('f****');
         }
       });
-    });
+    })
+    .catch(err => console.log(err));
     return stitchedImagePromise.promise;
   }
 
