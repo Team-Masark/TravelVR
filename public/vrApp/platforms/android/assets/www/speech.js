@@ -75,19 +75,21 @@ var searchModule = function() {
       });
     }
     var queryParams = encodeURIComponent(convertedText);
-    return new Promise(function(resolve, reject) {
-      $.get(searchURL + '?location=' + queryParams + '&&apikey=' + expediaAPIkey)
-        .done(function(res) {
-          console.log(res);
-          var activitiesData = res.activities ? res.activities : {};
-          resolve(activitiesData);
-          $('#second-screen-content').html('');
-        })
-        .fail(function(err) {
-          reject(err);
-          console.log('failed to get place');
-        });
-    });
+    return fetch('https://maps.googleapis.com/maps/api/geocode/json?&address=' + queryParams)
+    .then(res => console.log(res));
+    // return new Promise(function(resolve, reject) {
+    //   $.get(searchURL + '?location=' + queryParams + '&&apikey=' + expediaAPIkey)
+    //     .done(function(res) {
+    //       console.log(res);
+    //       var activitiesData = res.activities ? res.activities : {};
+    //       resolve(activitiesData);
+    //       $('#second-screen-content').html('');
+    //     })
+    //     .fail(function(err) {
+    //       reject(err);
+    //       console.log('failed to get place');
+    //     });
+    // });
   }
 
 
