@@ -1,11 +1,11 @@
-var searchModule = function() {
+window.speeching = false;
+window.searchModule = function() {
+window.serverURL = 'http://localhost:8080';
 
-  var expediaAPIkey = 'K2Ib5A0ODGSQ9eEqnmw5zyspMIlB4XT8',
-    searchURL = 'http://terminal2.expedia.com:80/x/activities/search';
+  var googleApiKey = 'AIzaSyCS8-rNnFS6BGRk9hQkyg2152X6NuJxpiw',
+    searchURL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
 
-  function renderSceneForResults(searchResults) {
-    const data = searchResults.results;
-
+  function renderSceneForResults(data) {
     $('#first-screen').attr('visible', false);
     $('#second-screen').attr('visible', true);
     $('#third-screen').attr('visible', false);
@@ -22,7 +22,7 @@ var searchModule = function() {
     }
 
     data.sort(function(a, b) {
-      return b.recommendationScore - a.recommendationScore;
+      return b.rating - a.rating;
     });
 
     var entitySet = [];
@@ -33,24 +33,24 @@ var searchModule = function() {
       x = 8 * Math.cos(theta * Math.PI / 180);
       y = 8 * Math.sin(theta * Math.PI / 180);
 
-      data[i].title = data[i].name//data[i].title.split(/\s+/).slice(0, 3).join(" ");
-      data[i].latLng = data[i].geometry.location.lat + ',' + data[i].geometry.location.lng
       var rotate = 90 - (Math.atan(y / x) * 180) / Math.PI;
       if (i < 3 || i > 7) {
         rotate = rotate - 180;
       }
 
+      data[i].latLng = data[i].geometry.location.lat + ',' + data[i].geometry.location.lng;
+      data[i].imageUrl = window.serverURL +
+        '/webproxy?url=' +
+        encodeURIComponent('https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' + data[i].photos[0].photo_reference + '&key=' + googleApiKey);
       $("#second-screen-content").append(
         "<a-entity>" +
-        '<a-ring color="white" radius-inner="0.001" radius-outer="0.5" rotation="90 0 0" position="0 2 0"></a-ring>' +
-        '<a-entity text="text: < Back ;size:0.2;" material="color: #66E1B4" position="-0.35 1.9 0" rotation="90 0 0" scale="0.7 0.7 1"></a-entity>' +
-        "<a-entity text='text: " + data[i].title + "'" +
+        "<a-entity text='text: " + data[i].name + "'" +
         "material='color: #E4D354'" +
         "position='" + ((x) + " -2.5 " + (y + 0.9)) + "'" +
         "rotation= '0 " + (rotate) + " 0'" +
         "scale='0.4, 0.4, 0.4'>" +
         "</a-entity>" +
-        "<a-curvedimage latLng=" + data[i].latLng + " class='image-grid' src='" + data[i].icon + "' " +
+        "<a-curvedimage latLng=" + data[i].latLng + " class='image-grid' src='" + data[i].imageUrl + "'" +
         "height='3.0'" +
         "radius='8'" +
         "theta-length='-30'" +
@@ -77,40 +77,40 @@ var searchModule = function() {
       });
     }
     var queryParams = encodeURIComponent(convertedText);
-    return fetch('https://maps.googleapis.com/maps/api/geocode/json?&address=' + queryParams)
-    .then(res => res.json())
-    .then(res => {
-        console.log(res.results[0].geometry.location)
-        const placeLocation = res.results[0].geometry.location;
-        return fetch(`/places?key=AIzaSyBKMNsXHIvpHQsH3ED2xYa-GQPL2gSNSFA&keyword=${queryParams}&radius=500&location=${placeLocation.lat},${placeLocation.lng}`)
-    })
-    .then(res => res.json())
-    // .then(r => console.log(r))
-    .catch(err => console.error(err));
-    // return new Promise(function(resolve, reject) {
-    //   $.get(searchURL + '?location=' + queryParams + '&&apikey=' + expediaAPIkey)
-    //     .done(function(res) {
-    //       console.log(res);
-    //       var activitiesData = res.activities ? res.activities : {};
-    //       resolve(activitiesData);
-    //       $('#second-screen-content').html('');
-    //     })
-    //     .fail(function(err) {
-    //       reject(err);
-    //       console.log('failed to get place');
-    //     });
-    // });
+    return new Promise(function(resolve, reject) {
+
+      $.ajax({
+        url: window.serverURL + '/webproxy?url=' + encodeURIComponent(searchURL + '?query=' + queryParams + ' points of interest' + '&language=en&key=' + googleApiKey),
+        dataType: 'json',
+        crossDomain: true,
+        type: 'GET',
+        success: function(res) {
+          var activitiesData = res.results ? res.results : [];
+          resolve(activitiesData);
+          $('#second-screen-content').html('');
+        },
+        error: function(err) {
+          reject(err);
+          console.log('failed to get place');
+        }
+      });
+    });
   }
 
 
   function speechToPlace() {
     return new Promise(function(resolve, reject) {
-      // var recognition = new webkitSpeechRecognition();
-      // window.locationRecognizer = recognition;
-      // window.locationRecognizer.continuous = true;
-      // window.locationRecognizer.interimResults = false;
-      // window.locationRecognizer.lang = 'en-IN';
+      var recognition = new webkitSpeechRecognition();
+      window.locationRecognizer = recognition;
+      window.locationRecognizer.continuous = true;
+      window.locationRecognizer.interimResults = false;
+      window.locationRecognizer.lang = 'en-IN';
+      window.locationRecognizer.onerror = function() {
+        window.speeching = false;
+      };
       window.locationRecognizer.onresult = function(evt) {
+        window.speeching = false;
+        console.log(evt);
         getPlaceDetails(evt).then(function(d) {
           resolve(d);
         }, function(err) {
@@ -118,7 +118,15 @@ var searchModule = function() {
         });
       };
       window.locationRecognizer.onend = window.locationRecognizer.stop;
-      window.locationRecognizer.start();
+      if (window.speeching) {
+        window.locationRecognizer.stop();
+      }
+        try {
+          window.locationRecognizer.start();
+        } catch (err) {
+          console.log(err);
+        }
+        // window.speeching = true;
     });
   }
 

@@ -1,6 +1,5 @@
-var serverURL =''// 'http://ec2-52-66-13-156.ap-south-1.compute.amazonaws.com:8080';
 
-var searchModuleInstance = searchModule();
+var searchModuleInstance = window.searchModule();
 
 window.locationRecognizer = new webkitSpeechRecognition();
 window.locationRecognizer.continuous = true;
@@ -33,17 +32,17 @@ $('#back-button').click(function() {
 });
 
 function latlongclicked(latlong) {
-  $.post(serverURL + '/stitchtest', {
+  $.post(window.serverURL + '/stitchtest', {
     lat: latlong.split(',')[0],
     long: latlong.split(',')[1]
   }).done(function(res) {
     console.log(res);
     var img = document.createElement('img');
-    img.src = serverURL + res;
+    img.src = window.serverURL + res;
     img.height = 500;
     img.width = 500;
     searchModuleInstance.screenvisibility(false, false, true);
-    $('#sky').attr('src', serverURL + res);
+    $('#sky').attr('src', window.serverURL + res);
 
   }).fail(function(err) {
     console.log(err);
