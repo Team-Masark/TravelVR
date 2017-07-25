@@ -8,7 +8,6 @@
 //   "presets": ["es2015"]
 // });
 var app = require('../app');
-var debug = require('debug')('exvr:server');
 var http = require('http');
 
 /**
@@ -85,5 +84,5 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on ' + addr.address+ addr.port);
 }

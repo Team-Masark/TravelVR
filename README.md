@@ -10,4 +10,11 @@ Steps:
 
 
 DEMO at :
-http://localhost:8080/
+http://localhost:8080/ - if launched locally
+
+
+Online DEMO at:
+
+https://travelvr.herokuapp.com/
+
+Runs using docker 😎🤘🏻

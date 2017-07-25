@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var fs = require('fs');
 var request = require('request');
 var Promise = require('es6-promise').Promise;
