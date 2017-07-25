@@ -1,7 +1,13 @@
-# ExVR-be
+# TravelVR
+
+Travel VR - uses google apis for fetching both places and stitching images.
+[Includes both frontend and backend]
+
+Steps:
+1. install graphicsmagick - For MAC - `brew install graphicsmagick`
+2. do npm install or yarn install.
+3. yarn start
+
 
 DEMO at :
-http://ec2-52-66-13-156.ap-south-1.compute.amazonaws.com:8080/
-or 
-http://tinyurl.com/expediavrmdl
-travel one
+http://localhost:8080/
