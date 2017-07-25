@@ -1,6 +1,6 @@
 window.speeching = false;
 window.searchModule = function() {
-window.serverURL = 'http://localhost:8080';
+window.serverURL = '';
 
   var googleApiKey = 'AIzaSyCS8-rNnFS6BGRk9hQkyg2152X6NuJxpiw',
     searchURL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
