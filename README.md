@@ -18,3 +18,8 @@ Online DEMO at:
 https://travelvr.herokuapp.com/
 
 Runs using docker 😎🤘🏻
+
+
+Deployment steps: 
+1. heroku container:login
+2. heroku container:push web
