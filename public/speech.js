@@ -39,7 +39,7 @@ window.serverURL = '';
       }
 
       data[i].latLng = data[i].geometry.location.lat + ',' + data[i].geometry.location.lng;
-      data[i].imageUrl = window.serverURL +
+      data[i].imageUrl = data[i].photos && window.serverURL +
         '/webproxy?url=' +
         encodeURIComponent('https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' + data[i].photos[0].photo_reference + '&key=' + googleApiKey);
       $("#second-screen-content").append(
