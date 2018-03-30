@@ -6,6 +6,10 @@ window.serverURL = '';
     searchURL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
 
   function renderSceneForResults(data) {
+    if (data && data.length === 0) {
+      alert('Oops! No data available. Please try again.');
+      return;
+    }
     $('#first-screen').attr('visible', false);
     $('#second-screen').attr('visible', true);
     $('#third-screen').attr('visible', false);

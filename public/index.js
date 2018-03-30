@@ -12,6 +12,8 @@ $('#microphone')[0].addEventListener('stateadded', function(evt) {
     searchModuleInstance.speechToPlace().then(function(res) {
       searchModuleInstance.renderSceneForResults(res);
       initGriddomClick();
+    }).catch(() => {
+      alert('Oops! No data available. Please try again.');
     });
   }
 });
